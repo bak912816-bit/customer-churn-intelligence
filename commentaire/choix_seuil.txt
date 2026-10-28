@@ -1,0 +1,49 @@
+COMMENTAIRE — CHOIX DU SEUIL DE CLASSIFICATION
+
+Projet : Customer Churn Intelligence  
+Modèle : Régression logistique avec `class_weight="balanced"`
+
+1. OBJECTIF DU CHOIX DU SEUIL
+
+Le modèle estime la probabilité qu’un client quitte l’entreprise (churn). Par défaut, un seuil de 0,50 est utilisé : si la probabilité estimée est supérieure ou égale à 0,50, le client est classé comme susceptible de partir.
+
+Tester différents seuils permet de trouver un compromis entre la détection des clients qui partent réellement (Recall) et la limitation des fausses alertes (Precision).
+
+2. RÉSULTATS OBTENUS
+
+Plusieurs seuils, de 0,30 à 0,60, ont été comparés.
+
+Le seuil de 0,55 a obtenu le meilleur F1-score parmi les seuils testés.
+
+- Seuil retenu provisoirement : 0,55
+- Accuracy : 75,37 %
+- Precision : 52,51 %
+- Recall : 75,40 %
+- F1-score : 61,91 %
+- Matrice de confusion : [[780, 255], [92, 282]]
+
+3. INTERPRÉTATION
+
+Avec ce seuil, le modèle :
+- détecte correctement 282 clients qui ont réellement quitté le service ;
+- ne détecte pas 92 clients qui ont quitté le service ;
+- signale à tort 255 clients qui sont restés ;
+- identifie correctement 780 clients qui sont restés.
+
+Le modèle détecte donc environ 75 % des clients ayant quitté le service, mais génère également un nombre important de fausses alertes.
+
+4. POURQUOI RETENIR LE SEUIL DE 0,55 ?
+
+Ce seuil maximise le F1-score parmi les valeurs testées. Il représente un compromis entre la capacité à détecter les départs et la limitation des fausses alertes.
+
+Dans un contexte professionnel, le choix définitif dépend aussi du coût de la perte d’un client, du budget consacré aux actions de fidélisation et de la capacité de l’entreprise à contacter les clients identifiés.
+
+5. LIMITE MÉTHODOLOGIQUE
+
+Le seuil a été choisi à partir des résultats obtenus sur le jeu de test. Pour une évaluation plus rigoureuse, il faudrait choisir le seuil sur un jeu de validation distinct, puis utiliser le jeu de test uniquement pour l’évaluation finale.
+
+Les performances actuelles doivent donc être considérées comme exploratoires.
+
+CONCLUSION
+
+Le seuil de 0,55 est retenu provisoirement pour la suite du projet, car il présente le meilleur F1-score parmi les seuils évalués. Ce choix devra idéalement être confirmé sur un jeu de validation distinct et en tenant compte des objectifs métier.

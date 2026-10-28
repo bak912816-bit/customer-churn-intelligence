@@ -1,0 +1,50 @@
+ANALYSE ET COMPARAISON DES MODÈLES DE PRÉDICTION DU CHURN
+Dataset : Telco Customer Churn
+Méthode : régression logistique
+Évaluation : jeu de test de 1 409 clients
+
+1. OBJECTIF
+
+L'objectif est de prédire si un client risque de quitter l'entreprise (Churn = Yes).
+Deux modèles de régression logistique ont été comparés :
+- un modèle standard ;
+- un modèle équilibré utilisant class_weight="balanced".
+
+Les deux modèles ont été évalués sur le même jeu de test. Les variables ont été standardisées dans un pipeline afin de faciliter l'optimisation.
+
+2. COMPARAISON DES RÉSULTATS
+
+Métrique                 Modèle standard    Modèle équilibré
+Accuracy                 80,62 %            73,95 %
+Precision                65,73 %            50,60 %
+Recall                   56,42 %            78,34 %
+F1-score                 60,72 %            61,49 %
+Départs manqués (FN)     163                81
+Fausses alertes (FP)     110                286
+
+3. INTERPRÉTATION
+
+Le modèle standard obtient une accuracy plus élevée (80,62 %) et une meilleure précision (65,73 %). Lorsqu'il signale un client comme susceptible de partir, sa prédiction est donc plus souvent correcte. En revanche, il ne détecte que 56,42 % des clients qui partent réellement et manque 163 départs dans le jeu de test.
+
+Le modèle équilibré obtient une accuracy plus faible (73,95 %) et une précision plus faible (50,60 %). En contrepartie, son recall atteint 78,34 % : il détecte 293 des 374 clients qui sont réellement partis et n'en manque que 81. Cette amélioration s'accompagne de 286 fausses alertes, contre 110 pour le modèle standard.
+
+Le F1-score du modèle équilibré est légèrement supérieur (61,49 % contre 60,72 %), mais l'écart est faible. Les résultats montrent donc un compromis entre la détection des départs et le nombre de fausses alertes.
+
+4. CHOIX DU MODÈLE
+
+Nous retenons provisoirement le modèle équilibré comme modèle principal, car l'objectif métier est d'identifier les clients susceptibles de partir afin de pouvoir leur proposer des actions de fidélisation. Dans ce contexte, manquer un client réellement à risque peut représenter une occasion perdue d'intervention. Le modèle équilibré réduit les départs manqués de 163 à 81 sur le jeu de test.
+
+Ce choix suppose toutefois que l'entreprise accepte de contacter davantage de clients qui ne partiront finalement pas. Si les campagnes de fidélisation sont coûteuses, le modèle standard peut être préférable.
+
+Le choix du modèle équilibré n'est donc pas universel : il est justifié par la priorité donnée ici à la détection des clients à risque. Le seuil de décision devra ensuite être ajusté selon le coût des départs manqués et celui des fausses alertes.
+
+5. LIMITES ET PROCHAINES ÉTAPES
+
+- Ces résultats mesurent les performances sur un jeu de test et ne garantissent pas les mêmes performances en production.
+- Les associations apprises par le modèle ne prouvent pas qu'une caractéristique cause le départ d'un client.
+- La prochaine étape consiste à examiner les probabilités prédites et à tester plusieurs seuils de décision pour trouver un compromis adapté au besoin métier.
+- Avant une utilisation réelle, il faudra également vérifier la stabilité du modèle et éviter toute fuite d'information entre entraînement et test.
+
+CONCLUSION
+
+Le modèle équilibré est retenu provisoirement parce qu'il détecte une plus grande proportion de départs (78,34 %) et réduit de moitié environ les départs manqués par rapport au modèle standard. Cette décision privilégie la fidélisation, tout en reconnaissant le coût potentiel des fausses alertes. Une optimisation du seuil permettra d'affiner ce compromis.
